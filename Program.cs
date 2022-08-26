@@ -5,24 +5,30 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-/* Single request delegate */
-// app.Run(async context =>
-// {
-//     await context.Response.WriteAsync("Hello world!");
-// });
+app.Map("/map1", HandleMapTest1);
 
-/* Chain multiple delegates */
-// app.Use(async (context, next) =>
-// {
-//     // Do work that can write to the Response.
-//     await next.Invoke();
-//     // Do logging or other work that doesn't write to the Response.
-// });
+app.Map("/map2", HandleMapTest2);
 
 app.Run(async context =>
 {
-    await context.Response.WriteAsync("Hello from 2nd delegate.");
+    await context.Response.WriteAsync("Hello from non-Map delegate.");
 });
+
+static void HandleMapTest1(IApplicationBuilder app)
+{
+    app.Run(async context =>
+    {
+        await context.Response.WriteAsync("Map Test 1");
+    });
+}
+
+static void HandleMapTest2(IApplicationBuilder app)
+{
+    app.Run(async context =>
+    {
+        await context.Response.WriteAsync("Map Test 2");
+    });
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
